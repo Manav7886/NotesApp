@@ -2,8 +2,9 @@ import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardContent, CardActions, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { ArchiveOutlined as Archive, DeleteOutlineOutlined as Delete } from '@mui/icons-material';
-import { DataContext } from '../../context/DataProvider';
+import { CreateOutlined as Create,ArchiveOutlined as Archive, DeleteOutlineOutlined as Delete } from '@mui/icons-material';
+import { DataContext } from '../../context/DataProvider'; 
+import Form from './Form';
 
 const StyledCard = styled(Card)`
     border: 1px solid #e0e0e0;
@@ -34,11 +35,18 @@ const Note = ({ note }) => {
             <CardContent>
                 <Typography>{note.heading}</Typography>
                 <Typography>{note.text}</Typography>
+                {note.photo && <img src={note.photo} alt="Note Photo" style={{ width: '100%', marginTop: 8 }} />}
             </CardContent>
             <CardActions>
-                <Archive
+            <Create
                     fontSize="small"
                     style={{ marginLeft: 'auto' }}
+                    onClick={() => Form(Form)}
+                
+                
+                />
+                <Archive
+                    fontSize="small"
                     onClick={() => archiveNote(note)}
                 />
                 <Delete
@@ -55,6 +63,7 @@ Note.propTypes = {
         id: PropTypes.string.isRequired,
         heading: PropTypes.string.isRequired,
         text: PropTypes.string.isRequired,
+        photo: PropTypes.string, // Add photo propType
         // Add more specific PropTypes as needed
     }).isRequired,
 };

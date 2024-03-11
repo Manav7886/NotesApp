@@ -1,5 +1,5 @@
+// DeleteNotes.jsx
 import { useContext } from 'react';
-
 import { Box, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -14,7 +14,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 const DeleteNotes = () => {
-
     const { deleteNotes } = useContext(DataContext);
 
     return (
@@ -23,18 +22,14 @@ const DeleteNotes = () => {
             <Box sx={{ p: 3, width: '100%' }}>
                 <DrawerHeader />
                 {deleteNotes.length > 0 ?
-
-                    <Grid container>
+                    <Grid container spacing={2}> {/* Add spacing prop */}
                         {deleteNotes.map(deleteNote => (
                             <Grid item key={deleteNote.id}>
                                 <DeleteNote deleteNote={deleteNote} />
                             </Grid>
                         ))}
-
-
                     </Grid>
                     : <EmptyDeletedNotes />}
-
             </Box>
         </Box>
     );

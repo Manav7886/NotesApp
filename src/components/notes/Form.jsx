@@ -1,10 +1,10 @@
-import { useState, useRef , useContext} from 'react';
+import { useState, useRef, useContext } from 'react';
 import styled from "@emotion/styled";
-import { Box, TextField, ClickAwayListener } from "@mui/material";
+import { Box, TextField, ClickAwayListener, IconButton } from "@mui/material";
+import PropTypes from 'prop-types'; // Import PropTypes
 import { DataContext } from '../../context/DataProvider';
 import { v4 as uuid } from 'uuid';
-
-
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'; // Import icon for adding photos
 
 const Container = styled(Box)`
     display: flex;
@@ -15,69 +15,100 @@ const Container = styled(Box)`
     width: 600px;
     border-radius: 8px;
     min-height: 30px;
-    padding: 10px 15px;`
+    padding: 10px 15px;
+    position: relative; // Add position relative for positioning the photo insert button
+`
 
-    const note = {
-        id: '',
-        heading: '',
-        text: ''
-    }
+const Note = {
+    id: '',
+    heading: '',
+    text: '',
+    photo: null // Add a photo field to store the inserted photo
+}
 
-const Form = () => {
+const Form = ({ onPhotoInserted }) => {
     const [showTextField, setShowTextField] = useState(false);
-    const [addNote, setAddNote] = useState({ ...note, id: uuid() });
-    
-    const onTextAreaClick = () => {
-        setShowTextField(true);
-        containerRef.current.style.minheight = '70px'
-    }
+    const [addNote, setAddNote] = useState({ ...Note, id: uuid() });
+    const fileInputRef = useRef(null);
+
     const { setNotes } = useContext(DataContext);
 
     const containerRef = useRef();
 
     const handleClickAway = () => {
         setShowTextField(false);
-         containerRef.current.style.minheight = '30px'
-        setAddNote({ ...note, id: uuid() });
+        containerRef.current.style.minHeight = '30px';
+        setAddNote({ ...Note, id: uuid() });
 
         if (addNote.heading || addNote.text) {
             setNotes(prevArr => [addNote, ...prevArr])
         }
     }
+
     const onTextChange = (e) => {
         let changedNote = { ...addNote, [e.target.name]: e.target.value };
         setAddNote(changedNote);
     }
+
+    const handleAddPhoto = () => {
+        fileInputRef.current.click(); // Trigger the file input click event
+    }
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        // Set the inserted photo to the note
+        const updatedNote = { ...addNote, photo: URL.createObjectURL(file) };
+        setAddNote(updatedNote);
+        // Callback to notify parent component about photo insertion
+        onPhotoInserted();
+    }
+
     return (
-        <ClickAwayListener onClickAway={handleClickAway}>        
+        <ClickAwayListener onClickAway={handleClickAway}>
             <Container ref={containerRef}>
-            {showTextField &&
+                {showTextField &&
+                    <TextField
+                        placeholder="Title"
+                        variant="standard"
+                        InputProps={{ disableUnderline: true }}
+                        style={{ marginBottom: 10 }}
+                        onChange={(e) => onTextChange(e)}
+                        name='heading'
+                        value={addNote.heading}
+                    />
+                }
+
                 <TextField
-                    placeholder="Title"
+                    placeholder="Take a note..."
+                    multiline
+                    maxRows={Infinity}
                     variant="standard"
                     InputProps={{ disableUnderline: true }}
-                    style={{ marginBottom: 10 }}
+                    onClick={() => setShowTextField(true)}
                     onChange={(e) => onTextChange(e)}
-                    name='heading'
-                    value={addNote.heading}
+                    name='text'
+                    value={addNote.text}
                 />
-            }
-
-            <TextField
-                placeholder="Take a note..."
-                multiline
-                maxRows={Infinity}
-                variant="standard"
-                InputProps={{ disableUnderline: true }}
-                onClick={onTextAreaClick}
-                onChange={(e) => onTextChange(e)}
-                name='text'
-                value={addNote.text}
-            />
-        </Container>
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={handleFileChange}
+                />
+                <IconButton
+                    style={{ position: 'absolute', bottom: 5, right: 5 }}
+                    onClick={handleAddPhoto}
+                >
+                    <PhotoCameraIcon />
+                </IconButton>
+            </Container>
         </ClickAwayListener>
-
     )
 }
 
-export default Form; 
+// Add propTypes validation
+Form.propTypes = {
+    onPhotoInserted: PropTypes.func, // Validate onPhotoInserted prop as a function
+};
+
+export default Form;

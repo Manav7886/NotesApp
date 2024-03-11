@@ -9,7 +9,6 @@ import Archive from './Archive';
 import SwipeDrawer from '../SwipeDrawer';
 import EmptyArchives from '../archives/EmptyArchives';
 
-
 const DrawerHeader = styled('div')(({ theme }) => ({
     ...theme.mixins.toolbar,
 }));
@@ -19,7 +18,6 @@ const Archives = () => {
     const { archiveNotes } = useContext(DataContext);
 
     return (
-
         <Box sx={{ display: 'flex', width: '100%' }}>
             <SwipeDrawer />
             <Box sx={{ p: 3, width: '100%' }}>
