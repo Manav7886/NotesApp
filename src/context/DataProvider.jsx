@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export const DataContext = createContext(null);
 
 const DataProvider = ({ children }) => {
-    const [notes, setNotes] = useState([]);
+    const [notes, setNotes,onEditNote] = useState([]);
     const [archiveNotes, setArchiveNotes] = useState([]);
     const [deleteNotes, setDeleteNotes] = useState([]);
 
@@ -15,7 +15,8 @@ const DataProvider = ({ children }) => {
             archiveNotes,
             setArchiveNotes,
             deleteNotes,
-            setDeleteNotes
+            setDeleteNotes,
+            onEditNote
         }}>
             {children}
         </DataContext.Provider>

@@ -38,12 +38,17 @@ const Notes = () => {
         setShowPhotoModal(false);
     };
 
+    const handleSaveNote = (updatedNote) => {
+        const updatedNotes = notes.map((n) => (n.id === updatedNote.id ? updatedNote : n));
+        setNotes(updatedNotes);
+    };
+
     return (
         <Box sx={{ display: 'flex', width: '100%' }}>
             <SwipeDrawer />
             <Box sx={{ p: 3, width: '100%' }}>
                 <DrawerHeader />
-                <Form />
+                <Form onSaveNote={handleSaveNote} />
                 {notes.length > 0 ? (
                     <DragDropContext onDragEnd={onDragEnd}>
                         <Droppable droppableId="droppable">
